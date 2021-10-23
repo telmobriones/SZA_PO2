@@ -1,4 +1,4 @@
-import socket, sys, os
+import socket, sys
 
 SERVER = 'localhost'
 PORT = 50006
@@ -98,7 +98,7 @@ if __name__ == "__main__":
             user = input( "Erabiltzaile izena: " ) + "#"
             password = input( "Pasahitza sortu: " ) + "#"
             email = input( "Posta elektroniko helbidea: " )
-            rMezua = "{}{}{}{}{}\r\n".format( Command.Register," ", user, password, email )
+            rMezua = "{}{}{}{}{}".format( Command.Register," ", user, password, email )
             print(rMezua)
             # Zerbitzariari mezurik bidali ez badiogu saio honetan
             if zerb_helb2 == None:
@@ -118,7 +118,7 @@ if __name__ == "__main__":
         elif option == Menua.Identify:
             user = input( "Erabiltzaile izena: " ) + "#"
             password = input( "Pasahitza: " )
-            iMezua = "{}{}{}{}\r\n".format( Command.Identify," ", user, password )
+            iMezua = "{}{}{}{}".format( Command.Identify," ", user, password )
             print(iMezua)
             
             # Zerbitzariari mezurik bidali ez badiogu saio honetan
@@ -147,7 +147,7 @@ if __name__ == "__main__":
                     jasotzaile = input("Idaztzi jasotzailearen erabiltzailea: ") + "#"
                     mMezua = input("Idatzi bidali nahi duzun mezua: ")
                     kode = kodea + "#"
-                    sMezua = "{}{}{}{}{}\r\n".format( Command.Message.encode("ascii")," ",kode.encode("ascii"), jasotzaile.encode("ascii"), mMezua.encode("utf8") )
+                    sMezua = "{}{}{}{}{}".format( Command.Message.encode("ascii")," ".encode("ascii"),kode.encode("ascii"), jasotzaile.encode("ascii"), mMezua.encode("utf8") )
                     s.send(sMezua)
                     eranM = s.recv( MAX_BUF ).decode("ascii")
                     
@@ -156,7 +156,7 @@ if __name__ == "__main__":
                 
                 # MEZUAK IRAKURRI
                 elif optionBi == MenuaBi.ReadMessage:
-                    rdMezua = "{}{}{}\r\n".format( Command.Read," ", kodea )
+                    rdMezua = "{}{}{}".format( Command.Read," ", kodea )
                     s.send(rdMezua.encode("ascii"))
                     eranRd = s.recv( MAX_BUF ).decode("ascii")
 
@@ -168,7 +168,7 @@ if __name__ == "__main__":
                             print(eranRd.split(" ",1)[1] + " mezu dituzu irakurtzeko: ")
                             n = eranRd.split(" ",1)[1]
                             while n != 0:
-                                mezu_Pakete = recv( MAX_BUF ).decode("ascii")
+                                mezu_Pakete = s.recv( MAX_BUF ).decode("ascii")
                                 bidaltzailea = mezu_Pakete.split("#",1)[0]
                                 mezua = mezu_Pakete.split("#",1)[1]
                                 print("\n\nBidaltzailea: " + bidaltzailea + "\nMezua: " + mezua)
@@ -178,10 +178,8 @@ if __name__ == "__main__":
 
                 # ITXI            
                 elif optionBi == MenuaBi.Close:
-                    eMezua = "{}{}{}\r\n".format( Command.Exit," ", kodea )
+                    eMezua = "{}{}{}".format( Command.Exit," ".encode("ascii"), kodea )
                     s.send( eMezua.encode( "ascii" ) )
                     eranI = s.recv( MAX_BUF ).decode( "ascii" )
                     s.close()
                     break
-    
-    
