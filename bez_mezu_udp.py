@@ -147,8 +147,8 @@ if __name__ == "__main__":
                     jasotzaile = input("Idaztzi jasotzailearen erabiltzailea: ") + "#"
                     mMezua = input("Idatzi bidali nahi duzun mezua: ")
                     kode = kodea + "#"
-                    sMezua = "{}{}{}{}{}".format( Command.Message.encode("ascii")," ".encode("ascii"),kode.encode("ascii"), jasotzaile.encode("ascii"), mMezua.encode("utf8") )
-                    s.send(sMezua)
+                    sMezua = "{}{}{}{}".format( Command.Message," ", kode, jasotzaile )
+                    s.send(sMezua.encode("ascii") + mMezua.encode("utf8"))
                     eranM = s.recv( MAX_BUF ).decode("ascii")
                     
                     if not iserror(eranM):
@@ -178,7 +178,7 @@ if __name__ == "__main__":
 
                 # ITXI            
                 elif optionBi == MenuaBi.Close:
-                    eMezua = "{}{}{}".format( Command.Exit," ".encode("ascii"), kodea )
+                    eMezua = "{}{}{}".format( Command.Exit," ", kodea )
                     s.send( eMezua.encode( "ascii" ) )
                     eranI = s.recv( MAX_BUF ).decode( "ascii" )
                     s.close()
