@@ -23,8 +23,8 @@ class Command:
 
 # Erregistratzeko eta saioa hasteko menua
 class Menua:
-    Register, Identify = range( 1, 3 )
-    Options = ( "Erregistratu", "Identifikatu" )
+    Register, Identify, Exit = range( 1, 4 )
+    Options = ( "Erregistratu", "Identifikatu", "Itxi" )
 
     def menua():
         print( "+{}+".format( '-' * 30 ) )
@@ -46,7 +46,7 @@ class Menua:
 
 # Behin saioa hasita erakusten den menua
 class MenuaBi:
-    SendMessage, ReadMessage, Close = range( 1, 4 )
+    Message, Read, Exit = range( 1, 4 )
     OptionsBi = ( "Mezua bidali"," Mezua irakurri", "Irten" )
 
     def menuaBi():
@@ -55,16 +55,16 @@ class MenuaBi:
             print( "| {}.- {:<25}|".format( i, optionBi ) )
             print( "+{}+".format( '-' * 30 ) )
             
-            while True:
-                try:
-                    selectedBi = int( input( "Egin zure aukera: " ) )
-                except:
-                    print( "Aukera okerra, saiatu berriro." )
-                    continue
-                if 0 < selectedBi <= len( MenuaBi.OptionsBi ):
-                    return selectedBi
-                else:
-                    print( "Aukera okerra, saiatu berriro." )
+        while True:
+            try:
+                selectedBi = int( input( "Egin zure aukera: " ) )
+            except:
+                print( "Aukera okerra, saiatu berriro." )
+                continue
+            if 0 < selectedBi <= len( MenuaBi.OptionsBi ):
+                return selectedBi
+            else:
+                print( "Aukera okerra, saiatu berriro." )
 
 
 # Erroreak dauden identifikatzeko eta pantailaratzeko funtzioa
@@ -113,7 +113,14 @@ if __name__ == "__main__":
             
             if iserror( eranR ):
                 continue
-            
+        
+        elif option == MenuaBi.Exit:
+            if zerb_helb2 != None:
+                eMezua = "{}{}{}".format( Command.Exit," ", kodea )
+                s.send( eMezua.encode( "ascii" ) )
+            s.close()
+            break
+        
         # IDENTIFIKATU
         elif option == Menua.Identify:
             user = input( "Erabiltzaile izena: " ) + "#"
@@ -143,7 +150,7 @@ if __name__ == "__main__":
                 optionBi = MenuaBi.menuaBi()
                 
                 # MEZUAK BIDALI
-                if optionBi == MenuaBi.SendMessage:
+                if optionBi == MenuaBi.Message:
                     jasotzaile = input("Idaztzi jasotzailearen erabiltzailea: ") + "#"
                     mMezua = input("Idatzi bidali nahi duzun mezua: ")
                     kode = kodea + "#"
@@ -155,7 +162,7 @@ if __name__ == "__main__":
                         print("Mezua zuzenki bidali da.")
                 
                 # MEZUAK IRAKURRI
-                elif optionBi == MenuaBi.ReadMessage:
+                elif optionBi == MenuaBi.Message:
                     rdMezua = "{}{}{}".format( Command.Read," ", kodea )
                     s.send(rdMezua.encode("ascii"))
                     eranRd = s.recv( MAX_BUF ).decode("ascii")
@@ -177,9 +184,8 @@ if __name__ == "__main__":
                             print("Ez da mezurik geratzen!\n\n")
 
                 # ITXI            
-                elif optionBi == MenuaBi.Close:
+                elif optionBi == MenuaBi.Exit:
                     eMezua = "{}{}{}".format( Command.Exit," ", kodea )
                     s.send( eMezua.encode( "ascii" ) )
-                    eranI = s.recv( MAX_BUF ).decode( "ascii" )
                     s.close()
                     break
