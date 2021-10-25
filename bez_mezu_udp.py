@@ -1,6 +1,5 @@
 import socket, sys
 
-SERVER = 'localhost'
 PORT = 50006
 MAX_BUF = 1024
 MAX_MEZU = 140
@@ -20,6 +19,7 @@ ER_MSG = (
 
 class Command:
     Register, Identify, Message, Read, Exit = ("RG", "ID", "MS", "RD", "XT")
+
 
 # Erregistratzeko eta saioa hasteko menua
 class Menua:
@@ -42,7 +42,6 @@ class Menua:
                 return selected
             else:
                 print( "Aukera okerra, saiatu berriro." )
-
 
 # Behin saioa hasita erakusten den menua
 class MenuaBi:
@@ -83,13 +82,12 @@ if __name__ == "__main__":
 	    exit( 1 )
 
     zerb_helb = (sys.argv[1], PORT)
-    entzuten = False
+    entzuten = False # Entzute socketera konektatuta gauden jakiteko
+    kodea = None     # Saiorako kodea gordetzeko
 
     # Socketa sortzen dugu
     s = socket.socket( socket.AF_INET, socket.SOCK_DGRAM )
 
-    # Saiorako kodea gordetzeko
-    kodea = None
     while True:
         option = Menua.menua()
 
