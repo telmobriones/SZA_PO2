@@ -114,6 +114,7 @@ if __name__ == "__main__":
             if iserror( eranR ):
                 continue
         
+        # IRTEN
         elif option == MenuaBi.Exit:
             if zerb_helb2 != None:
                 eMezua = "{}{}{}".format( Command.Exit," ", kodea )
