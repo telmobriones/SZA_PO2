@@ -83,7 +83,7 @@ if __name__ == "__main__":
 	    exit( 1 )
 
     zerb_helb = (sys.argv[1], PORT)
-    zerb_helb2 = None
+    entzuten = False
 
     # Socketa sortzen dugu
     s = socket.socket( socket.AF_INET, socket.SOCK_DGRAM )
@@ -99,14 +99,18 @@ if __name__ == "__main__":
             password = input( "Pasahitza sortu: " ) + "#"
             email = input( "Posta elektroniko helbidea: " )
             rMezua = "{}{}{}{}{}".format( Command.Register," ", user, password, email )
-            print(rMezua)
-            # Zerbitzariari mezurik bidali ez badiogu saio honetan
-            if zerb_helb2 == None:
-                s.sendto(rMezua.encode("ascii"), zerb_helb)
+
+            # Zerbitzariaren entzute socketari EZ bagaude konektatuta
+            if not entzuten:
+                s.sendto( rMezua.encode("ascii"), zerb_helb )
                 buf, zerb_helb2 = s.recvfrom( MAX_BUF )
+                
                 s.connect( zerb_helb2 )
+                entzuten = True
+
                 eranR = buf.decode()
-            # Zerbitzariari mezuren bat bidali badiogu saio honetan
+            
+            # Zerbitzariaren entzute socketari konektatuta bagaude
             else:
                 s.send(rMezua.encode( "ascii" ))
                 eranR = s.recv( MAX_BUF ).decode( "ascii" )
@@ -114,11 +118,8 @@ if __name__ == "__main__":
             if iserror( eranR ):
                 continue
         
-        # IRTEN
-        elif option == MenuaBi.Exit:
-            if zerb_helb2 != None:
-                eMezua = "{}{}{}".format( Command.Exit," ", kodea )
-                s.send( eMezua.encode( "ascii" ) )
+        # ITXI
+        elif option == Menua.Exit:
             s.close()
             break
         
@@ -127,19 +128,23 @@ if __name__ == "__main__":
             user = input( "Erabiltzaile izena: " ) + "#"
             password = input( "Pasahitza: " )
             iMezua = "{}{}{}{}".format( Command.Identify," ", user, password )
-            print(iMezua)
             
-            # Zerbitzariari mezurik bidali ez badiogu saio honetan
-            if zerb_helb2 == None:
-                s.sendto(iMezua.encode("ascii"), zerb_helb)
+            # Zerbitzariaren entzute socketari EZ bagaude konektatuta
+            if not entzuten:
+                s.sendto( iMezua.encode("ascii"), zerb_helb )
                 buf, zerb_helb2 = s.recvfrom( MAX_BUF )
+
                 s.connect( zerb_helb2 )
+                entzuten = True
+
                 eranI = buf.decode()
-            # Zerbitzariari mezuren bat bidali badiogu saio honetan
+            
+            # Zerbitzariaren entzute socketari konektatuta bagaude
             else:
                 s.send(iMezua.encode( "ascii" ))
                 eranI = s.recv( MAX_BUF ).decode( "ascii" )
             
+
             # Erantzuna positiboa bada, kodea lortu eta jarraitu
             if not iserror(eranI):
                 kodea = eranI.split(" ",1)[1]
@@ -147,6 +152,7 @@ if __name__ == "__main__":
                 s.close()
                 break
             
+
             while True:              
                 optionBi = MenuaBi.menuaBi()
                 
